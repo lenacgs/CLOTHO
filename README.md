@@ -57,6 +57,11 @@ UN  172.17.0.3  309.56 KiB  256          100.0%            d3780a0e-7ebc-4d8a-a7
 ```
 
 
+### Madalena's notes:
+- Change the paths on scripts/env.sh to point correctly to your rt.jar and jce.jar
+- Change the path on analyzer/build.xml line 73 to the path of your z3 build
+- If this doesn't work, try copying libz3.dylib into the analyzer dir
+- After these steps, everything should be up and running
 
 
 ### Static Analysis 
