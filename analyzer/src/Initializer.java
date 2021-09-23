@@ -8,8 +8,8 @@ import soot.Transform;
 
 public class Initializer {
 	private static final Logger LOG = LogManager.getLogger(Transformer.class);
-	static String _RT_PATH = System.getenv("CLOTHO_RT_PATH");
-	static String _JCE_PATH = System.getenv("CLOTHO_JCE_PATH");
+	static String _RT_PATH = "/Users/madalenasantos/.sdkman/candidates/java/current/jre/lib/rt.jar";
+	static String _JCE_PATH = "/Users/madalenasantos/.sdkman/candidates/java/current/jre/lib/jce.jar";
 	private static final String altClassPathOptionName = "alt-class-path";
 	static final String graphTypeOptionName = "graph-type";
 	static final String defaultGraph = "BriefUnitGraph";

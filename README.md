@@ -39,6 +39,7 @@ You can verify that the cluster is correctly set up by running:
 ```sh 
 ./clotho.sh --cluster
 ```
+
 You should see something like: 
 ```
 Datacenter: DC1
