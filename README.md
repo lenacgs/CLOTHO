@@ -104,10 +104,15 @@ I added some other rules with the intent to discover anomalies while making use 
 The rules are written under analyzer/src/Z3/StaticAssertions.java
 
 Line 109: mk_causal_vis
+
 Line 119: mk_causal_cons_updates
+
 Line 133: mk_causal_cons
+
 Line 143: mk_read_comm
+
 Line 153: mk_rep_read
+
 Line 163: mk_linearizable
 
 To make use of them, you just need to uncomment (or uncomment) the lines 199 - 203 in analyzer/src/Z3/Z3Driver.java
