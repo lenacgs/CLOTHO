@@ -194,6 +194,17 @@ public class Z3Driver {
 		addAssertion("irreflx_ar", staticAssrtions.mk_irreflx_ar());
 		addAssertion("otime_props", staticAssrtions.mk_otime_props());
 		addAssertion("opart_props", staticAssrtions.mk_opart_props());
+
+		/* ________ MY ASSERTIONS _______________ */
+		//addAssertion("causal_vis", staticAssrtions.mk_causal_vis());
+		//addAssertion("causal_consistency", staticAssrtions.mk_causal_cons_updates());
+		addAssertion("read_committed", staticAssrtions.mk_read_comm());
+		addAssertion("repeatable_read", staticAssrtions.mk_rep_read());
+		addAssertion("linearizability", staticAssrtions.mk_linearizable());
+		/* _________________________________________ */
+
+
+
 		SubHeaderZ3("anomaly shaping");
 		// change the shape of the anomaly according to the user-given configuration
 		if (ConstantArgs._NO_WW)

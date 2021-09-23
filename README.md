@@ -64,6 +64,8 @@ UN  172.17.0.3  309.56 KiB  256          100.0%            d3780a0e-7ebc-4d8a-a7
 - After these steps, you should be able to do the static analysis
 
 
+
+
 ### Static Analysis 
 Now that the cluster is up and running, you should choose a <benchmark_name> from pre-defined examples {dirty_read, dirty_write, long_fork, write_skew, lost_update} (or as we explain later, implement your own in analyzer/src/benchmarks/).
 
@@ -93,6 +95,24 @@ For example:
 ![alt text](https://raw.githubusercontent.com/Kiarahmani/CLOTHO/master/readme/anomaly_1.dot.png "Dirty Read Anomaly")
 
 
+### Madalena's notes
+
+The previous analysis is made using no extra rules == Eventual Consistency
+
+I added some other rules with the intent to discover anomalies while making use of other consistency models
+
+The rules are written under analyzer/src/Z3/StaticAssertions.java
+
+Line 109: mk_causal_vis
+Line 119: mk_causal_cons_updates
+Line 133: mk_causal_cons
+Line 143: mk_read_comm
+Line 153: mk_rep_read
+Line 163: mk_linearizable
+
+To make use of them, you just need to uncomment (or uncomment) the lines 199 - 203 in analyzer/src/Z3/Z3Driver.java
+
+The combination of mk_read_comm + mk_rep_read + mk_linearizable makes serializability and seems to be working correctly.
 
 ### Replaying Anomalies
 Following command will create required keyspace and schema for an anomaly on the Cassandra cluster:
