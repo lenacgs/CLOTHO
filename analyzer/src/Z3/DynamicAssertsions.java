@@ -81,12 +81,31 @@ public class DynamicAssertsions {
 	}
 
 	public BoolExpr op_types_to_parent_type(String name, String stmtName) {
+		// name = txn.getName()
+		// stmtName = iterator over txn.getStmtNames()
+		// if otype(o1) = OType(stmtName) then ttype(parent(o1)) = TType(name)
 		BoolExpr rhs = ctx.mkEq(ctx.mkApp(objs.getfuncs("ttype"), ctx.mkApp(objs.getfuncs("parent"), o1)),
 				ctx.mkApp(objs.getConstructor("TType", name)));
 		BoolExpr lhs = (BoolExpr) ctx.mkEq(ctx.mkApp(objs.getfuncs("otype"), o1),
 				ctx.mkApp(objs.getConstructor("OType", stmtName)));
 		BoolExpr body = ctx.mkImplies(lhs, rhs);
 		Quantifier x = ctx.mkForall(new Expr[] { o1 }, body, 1, null, null, null, null);
+		return x;
+	}
+
+	public BoolExpr same_transaction(String txnName, String stmt1, String stmt2) {
+		BoolExpr rhs1 = ctx.mkEq(ctx.mkApp(objs.getfuncs("ttype"), ctx.mkApp(objs.getfuncs("parent"), o1)),
+				ctx.mkApp(objs.getConstructor("TType", txnName)));
+		BoolExpr rhs2 = ctx.mkEq(ctx.mkApp(objs.getfuncs("ttype"), ctx.mkApp(objs.getfuncs("parent"), o2)),
+				ctx.mkApp(objs.getConstructor("TType", txnName))); //so they have the same parent
+		BoolExpr rhs3 = ctx.mkEq(ctx.mkApp(objs.getfuncs("otype"), o1),
+				ctx.mkApp(objs.getConstructor("OType", stmt1)));
+		BoolExpr rhs4 = ctx.mkEq(ctx.mkApp(objs.getfuncs("otype"), o2),
+				ctx.mkApp(objs.getConstructor("OType", stmt2)));
+		BoolExpr rhs = ctx.mkAnd(rhs1, rhs2,rhs3, rhs4);
+		BoolExpr lhs = (BoolExpr) ctx.mkApp(objs.getfuncs("same_transaction"), o1, o2);
+		BoolExpr body = ctx.mkImplies(rhs, lhs);
+		Quantifier x = ctx.mkForall(new Expr[] { o1, o2 }, body, 1, null, null, null, null);
 		return x;
 	}
 

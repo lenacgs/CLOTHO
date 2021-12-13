@@ -161,6 +161,8 @@ public class Z3Driver {
 		objs.addFunc("parent", ctx.mkFuncDecl("parent", objs.getSort("O"), objs.getSort("T")));
 		objs.addFunc("sibling",
 				ctx.mkFuncDecl("sibling", new Sort[] { objs.getSort("O"), objs.getSort("O") }, objs.getSort("Bool")));
+		objs.addFunc("same_transaction",
+				ctx.mkFuncDecl("same_transaction", new Sort[] { objs.getSort("O"), objs.getSort("O") }, objs.getSort("Bool")));
 		objs.addFunc("WR_O",
 				ctx.mkFuncDecl("WR_O", new Sort[] { objs.getSort("O"), objs.getSort("O") }, objs.getSort("Bool")));
 		objs.addFunc("RW_O",
@@ -176,11 +178,14 @@ public class Z3Driver {
 				ctx.mkFuncDecl("D", new Sort[] { objs.getSort("O"), objs.getSort("O") }, objs.getSort("Bool")));
 		objs.addFunc("X",
 				ctx.mkFuncDecl("X", new Sort[] { objs.getSort("O"), objs.getSort("O") }, objs.getSort("Bool")));
+		
 
 		HeaderZ3("properties");
 		// assertions
 		addAssertion("par_then_sib", staticAssrtions.mk_par_then_sib());
 		addAssertion("sib_then_par", staticAssrtions.mk_sib_then_par());
+		//addAssertion("mk_type_par_then_st", staticAssrtions.mk_type_par_then_st());
+		//addAssertion("mk_st_then_type_par", staticAssrtions.mk_st_then_type_par());
 		addAssertion("ar_on_writes", staticAssrtions.mk_ar_on_writes());
 		addAssertion("vis_on_writes", staticAssrtions.mk_vis_on_writes());
 		addAssertion("vis_then_ar", staticAssrtions.mk_vis_then_ar());
@@ -196,11 +201,12 @@ public class Z3Driver {
 		addAssertion("opart_props", staticAssrtions.mk_opart_props());
 
 		/* ________ MY ASSERTIONS _______________ */
-		//addAssertion("causal_vis", staticAssrtions.mk_causal_vis());
-		//addAssertion("causal_consistency", staticAssrtions.mk_causal_cons_updates());
-		addAssertion("read_committed", staticAssrtions.mk_read_comm());
-		addAssertion("repeatable_read", staticAssrtions.mk_rep_read());
-		addAssertion("linearizability", staticAssrtions.mk_linearizable());
+		addAssertion("causal_vis", staticAssrtions.mk_causal_vis());
+		addAssertion("causal_consistency", staticAssrtions.mk_causal_cons_updates());
+		//addAssertion("tcc", staticAssrtions.mk_trans_causal_cons());
+		//addAssertion("read_committed", staticAssrtions.mk_read_comm());
+		//addAssertion("repeatable_read", staticAssrtions.mk_rep_read());
+		//addAssertion("linearizability", staticAssrtions.mk_linearizable());
 		/* _________________________________________ */
 
 
@@ -230,9 +236,17 @@ public class Z3Driver {
 		// relating operation otypes to parent ttypes
 		for (Transaction txn : app.getTxns()) {
 			String name = txn.getName();
-			for (String stmtName : txn.getStmtNames())
+			System.out.println("txnName = " + name);
+			for (String stmtName : txn.getStmtNames()) {
+				System.out.println("stmtName = " + stmtName);
 				addAssertion("op_types_" + name + "_" + stmtName,
 						dynamicAssertions.op_types_to_parent_type(name, stmtName));
+				for (String stmtName2 : txn.getStmtNames()) {
+					if (!stmtName2.equals(stmtName)) {
+						addAssertion("same_transaction", dynamicAssertions.same_transaction(name, stmtName, stmtName2));
+					}
+				}
+			}
 		}
 		// make sure the otime assignment follows the program order
 		for (Transaction txn : app.getTxns()) {
@@ -482,10 +496,13 @@ public class Z3Driver {
 	private void RWthen(Set<Table> includedTables) throws UnexoectedOrUnhandledConditionalExpression {
 
 		Map<String, FuncDecl> Ts = objs.getAllTTypes();
-		for (FuncDecl t1 : Ts.values())
+		for (FuncDecl t1 : Ts.values()) {
+			System.out.println("t1 = " + t1.getName().toString());
 			for (FuncDecl t2 : Ts.values()) {
 				List<BoolExpr> conditions = ruleGenerator.return_conditions_rw_then(t1, t2, vo1, vo2, vt1, vt2,
 						includedTables);
+				System.out.println("t2 = " + t2.getName().toString());
+				System.out.println("t1 == t2 ? " + (t1==t2));
 				conditions.add(ctx.mkFalse());
 				// conditions.add(ctx.mkTrue());
 				BoolExpr rhs = ctx.mkOr(conditions.toArray(new BoolExpr[conditions.size()]));
@@ -505,6 +522,7 @@ public class Z3Driver {
 				String rule_name = t1.getName().toString() + "-" + t2.getName().toString() + "-rw-then";
 				addAssertion(rule_name, rw_then);
 			}
+		}
 
 	}
 

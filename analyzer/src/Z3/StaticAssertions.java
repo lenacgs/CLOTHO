@@ -36,6 +36,24 @@ public class StaticAssertions {
 		return x;
 	}
 
+	public Quantifier mk_type_par_then_st() {
+		BoolExpr rhs = ctx.mkEq(ctx.mkApp(objs.getfuncs("ttype"), ctx.mkApp(objs.getfuncs("parent"), o1)),
+			ctx.mkApp(objs.getfuncs("ttype"), ctx.mkApp(objs.getfuncs("parent"), o2)));
+		BoolExpr lhs = (BoolExpr) ctx.mkApp(objs.getfuncs("same_transaction"), o1, o2);
+		BoolExpr body = ctx.mkImplies(rhs, lhs);
+		Quantifier x = ctx.mkForall(new Expr[] { o1, o2 }, body, 1, null, null, null, null);
+		return x;
+	}
+
+	public Quantifier mk_st_then_type_par() {
+		BoolExpr lhs = (BoolExpr) ctx.mkApp(objs.getfuncs("same_transaction"), o1, o2);
+		BoolExpr rhs = ctx.mkEq(ctx.mkApp(objs.getfuncs("ttype"), ctx.mkApp(objs.getfuncs("parent"), o1)),
+			ctx.mkApp(objs.getfuncs("ttype"), ctx.mkApp(objs.getfuncs("parent"), o2)));
+		BoolExpr body = ctx.mkImplies(lhs, rhs);
+		Quantifier x = ctx.mkForall(new Expr[] { o1, o2 }, body, 1, null, null, null, null);
+		return x;
+	}
+
 	public BoolExpr mk_ar_on_writes() {
 		BoolExpr lhs = (BoolExpr) ctx.mkApp(objs.getfuncs("ar"), o1, o2);
 		BoolExpr rhs1 = (BoolExpr) ctx.mkApp(objs.getfuncs("is_update"), o1);
@@ -117,7 +135,7 @@ public class StaticAssertions {
 	}
 
 	public BoolExpr mk_causal_cons_updates() {
-		BoolExpr lhs1 = (BoolExpr) ctx.mkApp(objs.getfuncs("sibling"), o1, o2);
+		BoolExpr lhs1 = (BoolExpr) ctx.mkApp(objs.getfuncs("same_transaction"), o1, o2);
 		BoolExpr lhs21 = (BoolExpr) ctx.mkApp(objs.getfuncs("is_update"), o1);
 		BoolExpr lhs22 = (BoolExpr) ctx.mkApp(objs.getfuncs("is_update"), o2);
 		BoolExpr lhs2 = (BoolExpr) ctx.mkAnd(lhs21, lhs22);
@@ -131,12 +149,22 @@ public class StaticAssertions {
 	}
 
 	public BoolExpr mk_causal_cons() {
-		BoolExpr lhs = (BoolExpr) ctx.mkApp(objs.getfuncs("sibling"), o1, o2);
+
+		BoolExpr lhs = (BoolExpr) ctx.mkApp(objs.getfuncs("same_transaction"), o1, o2);
 		BoolExpr rhs1 = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o1, o2);
 		BoolExpr rhs2 = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o2, o1);
 		BoolExpr rhs = (BoolExpr) ctx.mkOr(rhs1, rhs2);
 		BoolExpr body = ctx.mkImplies(lhs, rhs);
 		Quantifier x = ctx.mkForall(new Expr[] {o1, o2}, body, 1, null, null, null, null);
+		return x;
+	}
+
+	public BoolExpr mk_trans_causal_cons() {
+		BoolExpr lhs1 = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o1, o2);
+		BoolExpr lhs2 = (BoolExpr) ctx.mkApp(objs.getfuncs("sibling"), o2, o3);
+		BoolExpr rhs = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o1, o3);
+		BoolExpr body = ctx.mkImplies(ctx.mkAnd(lhs1, lhs2), rhs);
+		Quantifier x = ctx.mkForall(new Expr[] {o1, o2, o3}, body, 1, null, null, null, null);
 		return x;
 	}
 
