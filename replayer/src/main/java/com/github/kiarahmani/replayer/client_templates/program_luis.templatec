@@ -30,7 +30,7 @@ public class Client {
 		}
 	}
 
-	public void writeVars_c1(int x) throws SQLException {
+	public void cluster_c1_writeVars(int x) throws SQLException {
 		String stmtstring = "INSERT INTO VALUES (var_name, value) VALUES (?, ?);";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setString(1, "a");
@@ -44,7 +44,7 @@ public class Client {
 		stmt2.executeUpdate();
 	}
 
-	public void checkVars_c2() throws SQLException {
+	public void cluster_c2_checkVars() throws SQLException {
 		String stmtstring = "SELECT value FROM values WHERE var_name = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setString(1, "a");

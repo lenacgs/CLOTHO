@@ -32,7 +32,7 @@ public class program2 {
 
 	//eventualmente evocar a addFriendship_c3 a partir da c1
 
-	public void addFriendship_c1(int profile_id1, int profile_id2) throws SQLException {
+	public void cluster_c1_addFriendship(int profile_id1, int profile_id2) throws SQLException {
 		String stmtstring = "INSERT INTO FRIENDS_BY_PROFILE (profile_id, friend_id)" +
 			" VALUES (?, ?);";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
@@ -48,7 +48,7 @@ public class program2 {
 		stmt2.executeUpdate();
 	}
 
-	public void removeFriendship_c1(int profile_id1, int profile_id2) throws SQLException {
+	public void cluster_c1_removeFriendship(int profile_id1, int profile_id2) throws SQLException {
 		String stmtstring = "DELETE FROM FRIENDS_BY_PROFILE WHERE profile_id = ? AND friend_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setInt(1, profile_id1);
@@ -62,7 +62,7 @@ public class program2 {
 		stmt2.executeUpdate();
 	}
 
-	public void listFriendships_c1(int profile_id) throws SQLException {
+	public void cluster_c1_listFriendships(int profile_id) throws SQLException {
 		String stmtString = "SELECT friend_id FROM FRIENDS_BY_PROFILE WHERE profile_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtString);
 		stmt.setInt(1, profile_id);
@@ -74,7 +74,7 @@ public class program2 {
 		}
 	}
 
-	public void createPost_c1(int profile_id) throws SQLException {
+	public void cluster_c1_createPost(int profile_id) throws SQLException {
 		String stmtstring = "INSERT INTO POSTS_BY_PROFILE (profile_id, post_id) VALUES (?, ?, ?);";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setInt(1, profile_id);
@@ -82,13 +82,13 @@ public class program2 {
 		stmt.setInt(2, postid);
 		stmt.setString(3, "olaola");
 		stmt.executeUpdate();
-		createPost_c2(profile_id, postid);
+		cluster_c2_createPost(profile_id, postid);
 	}
 
-	public void createPost_c2(int profile_id, int post_id) throws SQLException {
+	public void cluster_c2_createPost(int profile_id, int post_id) throws SQLException {
 		String stmtstring = "UPDATE POSTS_BY_PROFILE SET text = ? WHERE profile_id = ? AND post_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
-		stmt.setString(1, "olaola");
+		stmt.setString(1, "textinserted");
 		stmt.setInt(2, profile_id);
 		stmt.setInt(3, post_id);
 		stmt.executeUpdate();
@@ -96,18 +96,18 @@ public class program2 {
 
 	//c1 gets all posts that profile_id published, and triggers getPosts_c2 to read the text from those posts
 	//c1 verifies if it is possible to access the posts (if they are friends) and c2 reads the posts
-	public void getPosts_c1(int profile_id, int me) throws SQLException {
+	public void cluster_c1_getPosts(int profile_id, int me) throws SQLException {
 		String stmtstring = "SELECT friend_id FROM FRIENDS_BY_PROFILE WHERE profile_id = ? AND friend_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setInt(1, me);
 		stmt.setInt(2, profile_id);
 		ResultSet rs = stmt.executeQuery();
 
-		if (rs.next()) getPosts_c2(profile_id);
+		if (rs.next()) cluster_c2_getPosts(profile_id);
 		else System.out.println("You cannot access this profile's posts.");
 	}
 
-	public void getPosts_c2(int profile_id) throws SQLException {
+	public void cluster_c2_getPosts(int profile_id) throws SQLException {
 		String stmtstring = "SELECT text, post_id FROM POSTS_BY_PROFILE WHERE profile_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setInt(1, profile_id);

@@ -8,7 +8,8 @@ case $key in
     -g|--generate)
     DIR="$2"
     for filename in $DIR/*/*.dot; do
-      dot -Tpng  $filename -o "${filename}.png" 
+      neato -Tpng  $filename -o "${filename}.png" 
+      echo "1 - ${filename}"
     done
     echo "${DIR} successfully generated" 
     shift # past argument
@@ -18,7 +19,8 @@ case $key in
     DIR="$2"
     ANMLNO="$3"
     for filename in "${DIR}/anomaly\#${ANMLNO}/*_${ANMLNO}.dot.png"; do
-      xdg-open $filename
+      echo "2 - ${filename}"
+      open $filename
     done
     shift # past argument
     shift # past value
@@ -27,11 +29,13 @@ case $key in
     DIR="$2"
     ANMLNO="$3"
     for filename in $DIR/*/*.dot; do
-      dot -Tpng  $filename -o "${filename}.png" 
+      echo "3 - GENERATING .PNG FOR ${filename}"
+      fdp -Tpng  $filename -o "${filename}.png" 
     done
     echo "${DIR} successfully generated" 
     for filename in "${DIR}/anomaly\#${ANMLNO}/anom*_*.dot.png"; do
-      xdg-open $filename
+      echo "4 - ${filename}"
+      open $filename
     done
     shift # past argument
     shift # past value

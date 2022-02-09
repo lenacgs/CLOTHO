@@ -4,8 +4,6 @@ CREATE TABLE Friends_by_profile (
     PRIMARY KEY (profile_id, friend_id)
 );
 
-
-
 CREATE TABLE Posts_by_profile (
     profile_id          INT ,
     post_id             INT ,

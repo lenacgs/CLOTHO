@@ -46,7 +46,7 @@ public class Client {
 		}
 	}
 
-	public void addFriendship_c1(long profile_id1, long profile_id2) throws SQLException {
+	public void cluster_c1_addFriendship(long profile_id1, long profile_id2) throws SQLException {
 		String stmtstring = "INSERT INTO FRIENDS_BY_PROFILE (profile_id, friend_id)" +
 			" VALUES (?, ?);";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
@@ -62,7 +62,7 @@ public class Client {
 		stmt2.executeUpdate();
 	}
 
-	public void removeFriendship_c1(long profile_id1, long profile_id2) throws SQLException {
+	public void cluster_c1_removeFriendship(long profile_id1, long profile_id2) throws SQLException {
 		String stmtstring = "DELETE FROM FRIENDS_BY_PROFILE WHERE profile_id = ? AND friend_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setLong(1, profile_id1);
@@ -76,7 +76,7 @@ public class Client {
 		stmt2.executeUpdate();
 	}
 
-	public void listFriendships_c1(long profile_id) throws SQLException {
+	public void cluster_c1_listFriendships(long profile_id) throws SQLException {
 		String stmtString = "SELECT friend_id FROM FRIENDS_BY_PROFILE WHERE profile_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtString);
 		stmt.setLong(1, profile_id);
@@ -88,7 +88,7 @@ public class Client {
 		}
 	}
 
-	public void createPost_c1(long profile_id) throws SQLException {
+	public void cluster_c1_createPost(long profile_id) throws SQLException {
 		String stmtstring = "INSERT INTO POSTS_BY_PROFILE (profile_id, post_id) VALUES (?, ?, ?);";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setLong(1, profile_id);
@@ -96,10 +96,10 @@ public class Client {
 		stmt.setLong(2, postid);
 		stmt.setString(3, "olaola");
 		stmt.executeUpdate();
-		createPost_c2(profile_id, postid);
+		cluster_c2_createPost(profile_id, postid);
 	}
 
-	public void createPost_c2(long profile_id, long post_id) throws SQLException {
+	public void cluster_c2_createPost(long profile_id, long post_id) throws SQLException {
 		String stmtstring = "UPDATE POSTS_BY_PROFILE SET text = ? WHERE profile_id = ? AND post_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setString(1, "olaola");
@@ -109,7 +109,7 @@ public class Client {
 	}
 
 	//c1 gets all posts that profile_id published, and triggers getPosts_c2 to read the text from those posts
-	public void getPosts_c1(long profile_id) throws SQLException {
+	public void cluster_c1_getPosts(long profile_id) throws SQLException {
 		String stmtstring = "SELECT post_id FROM POSTS_BY_PROFILE WHERE profile_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setLong(1, profile_id);
@@ -117,12 +117,12 @@ public class Client {
 		long readID;
 		while (rs.next() != false) {
 			readID = rs.getLong("POST_ID");
-			getPosts_c2(readID, profile_id);
+			cluster_c2_getPosts(readID, profile_id);
 			System.out.println("post_id = " + readID);
 		}
 	}
 
-	public void getPosts_c2(long post_id, long profile_id) throws SQLException {
+	public void cluster_c2_getPosts(long post_id, long profile_id) throws SQLException {
 		String stmtstring = "SELECT text FROM POSTS_BY_PROFILE WHERE profile_id = ? AND post_id = ?;";
 		PreparedStatement stmt = connect.prepareStatement(stmtstring);
 		stmt.setLong(1, profile_id);

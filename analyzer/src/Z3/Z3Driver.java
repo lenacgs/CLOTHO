@@ -201,8 +201,8 @@ public class Z3Driver {
 		addAssertion("opart_props", staticAssrtions.mk_opart_props());
 
 		/* ________ MY ASSERTIONS _______________ */
-		addAssertion("causal_vis", staticAssrtions.mk_causal_vis());
-		addAssertion("causal_consistency", staticAssrtions.mk_causal_cons_updates());
+		//addAssertion("causal_vis", staticAssrtions.mk_causal_vis());
+		//addAssertion("causal_consistency", staticAssrtions.mk_causal_cons_updates());
 		//addAssertion("tcc", staticAssrtions.mk_trans_causal_cons());
 		//addAssertion("read_committed", staticAssrtions.mk_read_comm());
 		//addAssertion("repeatable_read", staticAssrtions.mk_rep_read());

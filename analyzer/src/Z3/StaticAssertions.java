@@ -149,7 +149,6 @@ public class StaticAssertions {
 	}
 
 	public BoolExpr mk_causal_cons() {
-
 		BoolExpr lhs = (BoolExpr) ctx.mkApp(objs.getfuncs("same_transaction"), o1, o2);
 		BoolExpr rhs1 = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o1, o2);
 		BoolExpr rhs2 = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o2, o1);
@@ -161,7 +160,7 @@ public class StaticAssertions {
 
 	public BoolExpr mk_trans_causal_cons() {
 		BoolExpr lhs1 = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o1, o2);
-		BoolExpr lhs2 = (BoolExpr) ctx.mkApp(objs.getfuncs("sibling"), o2, o3);
+		BoolExpr lhs2 = (BoolExpr) ctx.mkApp(objs.getfuncs("same_transaction"),  o2, o3);
 		BoolExpr rhs = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o1, o3);
 		BoolExpr body = ctx.mkImplies(ctx.mkAnd(lhs1, lhs2), rhs);
 		Quantifier x = ctx.mkForall(new Expr[] {o1, o2, o3}, body, 1, null, null, null, null);
@@ -179,7 +178,7 @@ public class StaticAssertions {
 	}
 
 	public BoolExpr mk_rep_read() {
-		BoolExpr lhs1 = (BoolExpr) ctx.mkApp(objs.getfuncs("sibling"), o1, o2);
+		BoolExpr lhs1 = (BoolExpr) ctx.mkApp(objs.getfuncs("sibling"), o1, o2); //yields the same results if we use "same_transaction"
 		BoolExpr lhs2 = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o3, o1);
 		BoolExpr lhs = (BoolExpr) ctx.mkAnd(lhs1, lhs2);
 		BoolExpr rhs = (BoolExpr) ctx.mkApp(objs.getfuncs("vis"), o3, o2);
